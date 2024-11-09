@@ -12,7 +12,7 @@ pygame.display.set_caption("Space Invaders - Pantalla de Inicio")
 
 fondo = pygame.image.load("assets/background.png")
 logo = pygame.image.load("assets/logo.png")
-boton_start = pygame.image.load("assets/buttom_start.png")
+boton_start = pygame.image.load("assets/button_start.png")
 
 fondo_x1 = 0
 fondo_x2 = screen_width
@@ -69,4 +69,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
