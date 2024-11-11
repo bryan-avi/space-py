@@ -38,6 +38,7 @@ class Bala:
     def get_rect(self):
         return pygame.Rect(self.x + (nave_jugador.get_width() // 2) - bala_unidad.get_width() // 2, self.y, bala_unidad.get_width(), bala_unidad.get_height())
 
+
 # Variables del juego
 def reiniciar_juego():
     global nave_x, nave_y, vida_jugador, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo
@@ -76,7 +77,7 @@ def colision_jugador_balas_enemigas():
             vida_jugador -= 1
             balas_enemigas.remove(bala)
             if vida_jugador <= 0:
-                game_over.main()  # Llama a la pantalla de Game Over
+                game_over.game_over_screen()  # Llama a la pantalla de Game Over
                 return  # Salir de la función para detener el juego
 
 # Dibuja todos los elementos en la pantalla del juego
