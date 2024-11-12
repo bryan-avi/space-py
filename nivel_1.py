@@ -4,7 +4,7 @@ import random
 
 # Cargar sprites de los enemigos
 yellow = pygame.image.load("assets/yellow_enemy.png")
-bala_enemiga = pygame.image.load("assets/shot.png")
+bala_enemiga = pygame.image.load("assets/shot_enemy.png")
 
 #Numero maximo de disparos enemigos que puede haber en la pantalla
 MAX_BALAS_ENEMIGAS = 2
