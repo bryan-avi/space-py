@@ -29,7 +29,6 @@ boton_reiniciar_y = 430
 fondo_y = 0
 fondo_velocidad = 0.1  # Velocidad de movimiento del fondo
 
-# Función para verificar si el cursor está sobre un botón
 def is_over_button(pos, button_x, button_y, button_img):
     return button_x <= pos[0] <= button_x + button_img.get_width() and button_y <= pos[1] <= button_y + button_img.get_height()
 
