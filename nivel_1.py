@@ -48,8 +48,9 @@ class EnemigoYellow:
         #Solo dispara si el cooldown o tiempo ha pasado y no tiene ningun enemigo en frente
         if time.time() - self.ultimo_disparo >= self.cooldown_disparo and self.puede_disparar(enemigos):
             if len(balas_enemigas) < MAX_BALAS_ENEMIGAS:
-                #Solo dispara si no se ha alcanzado el limite maximo de balas enemigas
-                balas_enemigas.append(BalaEnemiga(self.x + yellow.get_width() // 2 , self.y + yellow.get_height()))
+                #Solo dispara si no se ha alcanzado el limite maximo de balas enemiga
+                bala = BalaEnemiga(self.x + yellow.get_width() // 2 - bala_enemiga.get_width() // 2, self.y + yellow.get_height())
+                balas_enemigas.append(bala)
                 self.ultimo_disparo = time.time()
 
 class BalaEnemiga:
@@ -62,10 +63,10 @@ class BalaEnemiga:
         self.y += self.velocidad #Mover la bala hacia abajo
 
     def dibujar_bala(self, surface):
-        surface.blit(bala_enemiga, (self.x, self.y))
+        surface.blit(bala_enemiga, (self.x - bala_enemiga.get_width() // 2, self.y))  # Centrar la bala debajo del enemigo
     
     def get_rect(self):
-        return pygame.Rect(self.x, self.y, bala_enemiga.get_width(), bala_enemiga.get_height())
+        return pygame.Rect(self.x - bala_enemiga.get_width() // 2, self.y, bala_enemiga.get_width(), bala_enemiga.get_height())
 
 # Crear una lista para almacenar los enemigos del nivel 1
 def crear_enemigos_nivel_1():
