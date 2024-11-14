@@ -119,3 +119,8 @@ def actualizar_enemigos_nivel_2(enemigos, balas_enemigas, surface):
         enemigo.mover()
         enemigo.dibujar(surface)
         enemigo.disparar(balas_enemigas, enemigos)
+        
+# Verificar condiciones de finalización del nivel
+def nivel_terminado(enemigos):
+    # Si todos los enemigos han sido eliminados, el nivel ha terminado
+    return len(enemigos) == 0

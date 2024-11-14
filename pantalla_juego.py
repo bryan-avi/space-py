@@ -3,6 +3,8 @@ import sys
 import time
 import nivel_1
 import nivel_2
+import nivel_final
+from nivel_final import BossFinal
 import game_over  # Importa el módulo de Game Over
 
 pygame.init()
@@ -45,7 +47,7 @@ def reiniciar_juego():
     global nave_x, nave_y, vida_jugador, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo
     nave_x = (screen_width - nave_jugador.get_width()) // 2
     nave_y = screen_height - nave_jugador.get_height() - 50
-    vida_jugador = 10
+    vida_jugador = 5
     balas = []
     balas_enemigas = []
     fondo_y = 0
@@ -101,14 +103,14 @@ def dibujar_pantalla_juego():
     for bala_enemiga in balas_enemigas:
         bala_enemiga.dibujar_bala(screen)
 
-    nivel_1.actualizar_enemigos(enemigos, balas_enemigas, screen)
+    nivel_final.actualizar_enemigos_nivel_3(enemigos, balas_enemigas, screen)
 
 # Ciclo principal del juego
 def main():
     global nave_x, ultimo_disparo, enemigos
-    enemigos = nivel_1.crear_enemigos_nivel_1()
+    enemigos = nivel_final.crear_enemigos_nivel_3()
     running = True
-    nivel_actual = 1
+    nivel_actual = 3
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -143,13 +145,6 @@ def main():
         detectar_colisiones()
         colision_jugador_balas_enemigas()
 
-        # Si estamos en el nivel 2, actualizamos los enemigos y el joker
-        if nivel_actual == 2:
-            for enemigo in enemigos:
-                enemigo.mover()
-                enemigo.dibujar(screen)
-                enemigo.disparar(balas_enemigas, enemigos)
-        
         # Si estamos en el nivel 1, simplemente actualizamos los enemigos
         if nivel_actual == 1:
             for enemigo in enemigos:
@@ -157,9 +152,19 @@ def main():
                 enemigo.dibujar(screen)
                 enemigo.disparar(balas_enemigas, enemigos)
 
-        for enemigo in enemigos:
-            enemigo.disparar(balas_enemigas, enemigos)
-
+        # Si estamos en el nivel 2, actualizamos los enemigos y el joker
+        elif nivel_actual == 2:
+            for enemigo in enemigos:
+                enemigo.mover()
+                enemigo.dibujar(screen)
+                enemigo.disparar(balas_enemigas, enemigos)
+        
+        elif nivel_actual == 3:
+            for enemigo in enemigos:
+                enemigo.mover()
+                enemigo.dibujar(screen)
+                enemigo.disparar(balas_enemigas, enemigos)
+                
         dibujar_pantalla_juego()
         pygame.display.update()
         clock.tick(360)
@@ -170,6 +175,18 @@ def main():
             time.sleep(3)
             enemigos = nivel_2.crear_enemigos_nivel_2()
             nivel_actual = 2
+
+        elif nivel_2.nivel_terminado(enemigos) and nivel_actual == 2:
+            print("Cargando nivel 3")
+            pygame.display.update()
+            time.sleep(3)
+            enemigos = nivel_final.crear_enemigos_nivel_3()
+            nivel_actual = 3
+
+        # Si el nivel 3 ha terminado (ej. todos los enemigos y el jefe han sido eliminados)
+        elif nivel_final.nivel_terminado(enemigos) and nivel_actual == 3:
+            print("¡Has ganado el juego!")
+            running = False
 
 if __name__ == "__main__":
     main()
