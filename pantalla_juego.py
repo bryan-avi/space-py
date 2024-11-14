@@ -158,16 +158,13 @@ def mostrar_menu_pausa():
 
 # Ciclo principal del juego
 def main():
-<<<<<<< HEAD
-    global nave_x, ultimo_disparo, paused
-=======
-    global nave_x, ultimo_disparo, enemigos
-<<<<<<< HEAD
+
+    
+    global nave_x, ultimo_disparo, enemigos, paused
+
     enemigos = nivel_final.crear_enemigos_nivel_3()
-=======
-    enemigos = nivel_1.crear_enemigos_nivel_1()
->>>>>>> d56fc05173b198d53df71fbe85a2348bd7b29427
->>>>>>> c0239be1a61b50d909ec8b453ced9d6c6579dc61
+
+
     running = True
     nivel_actual = 3
     while running:
@@ -214,27 +211,14 @@ def main():
         detectar_colisiones()
         colision_jugador_balas_enemigas()
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        # Dibuja la pantalla
-=======
-        # Si estamos en el nivel 2, actualizamos los enemigos y el joker
-        if nivel_actual == 2:
-            for enemigo in enemigos:
-                enemigo.mover()
-                enemigo.dibujar(screen)
-                enemigo.disparar(balas_enemigas, enemigos)
+
         
->>>>>>> c0239be1a61b50d909ec8b453ced9d6c6579dc61
         # Si estamos en el nivel 1, simplemente actualizamos los enemigos
         if nivel_actual == 1:
             for enemigo in enemigos:
                 enemigo.mover()
                 enemigo.dibujar(screen)
                 enemigo.disparar(balas_enemigas, enemigos)
-
-<<<<<<< HEAD
         # Si estamos en el nivel 2, actualizamos los enemigos y el joker
         elif nivel_actual == 2:
             for enemigo in enemigos:
@@ -248,12 +232,10 @@ def main():
                 enemigo.dibujar(screen)
                 enemigo.disparar(balas_enemigas, enemigos)
                 
-=======
+
         for enemigo in enemigos:
             enemigo.disparar(balas_enemigas, enemigos)
 
->>>>>>> d56fc05173b198d53df71fbe85a2348bd7b29427
->>>>>>> c0239be1a61b50d909ec8b453ced9d6c6579dc61
         dibujar_pantalla_juego()
 
         pygame.display.update()
