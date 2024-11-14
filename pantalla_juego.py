@@ -2,10 +2,12 @@ import pygame
 import sys
 import time
 import nivel_1
+import nivel_2
 import game_over  # Importa el módulo de Game Over
 import subprocess
 
 pygame.init()
+clock = pygame.time.Clock()
 
 screen_width = 800
 screen_height = 600
@@ -19,7 +21,6 @@ nave_jugador = pygame.image.load("assets/sprites_player/player.png")
 yellow = pygame.image.load("assets/yellow_enemy.png")
 yellow2 = pygame.image.load("assets/yellow_enemy_v2.png")
 red = pygame.image.load("assets/red_enemy.png")
-joke = pygame.image.load("assets/joke_enemy.png")
 boss_yellow = pygame.image.load("assets/boss_yellow.png")
 bala_unidad = pygame.image.load("assets/shot.png")
 
@@ -51,7 +52,7 @@ def reiniciar_juego():
     global nave_x, nave_y, vida_jugador, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo
     nave_x = (screen_width - nave_jugador.get_width()) // 2
     nave_y = screen_height - nave_jugador.get_height() - 50
-    vida_jugador = 3
+    vida_jugador = 10
     balas = []
     balas_enemigas = []
     fondo_y = 0
@@ -155,8 +156,14 @@ def mostrar_menu_pausa():
 
 # Ciclo principal del juego
 def main():
+<<<<<<< HEAD
     global nave_x, ultimo_disparo, paused
+=======
+    global nave_x, ultimo_disparo, enemigos
+    enemigos = nivel_1.crear_enemigos_nivel_1()
+>>>>>>> d56fc05173b198d53df71fbe85a2348bd7b29427
     running = True
+    nivel_actual = 1
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -201,10 +208,38 @@ def main():
         detectar_colisiones()
         colision_jugador_balas_enemigas()
 
+<<<<<<< HEAD
         # Dibuja la pantalla
+=======
+        # Si estamos en el nivel 2, actualizamos los enemigos y el joker
+        if nivel_actual == 2:
+            for enemigo in enemigos:
+                enemigo.mover()
+                enemigo.dibujar(screen)
+                enemigo.disparar(balas_enemigas, enemigos)
+        
+        # Si estamos en el nivel 1, simplemente actualizamos los enemigos
+        if nivel_actual == 1:
+            for enemigo in enemigos:
+                enemigo.mover()
+                enemigo.dibujar(screen)
+                enemigo.disparar(balas_enemigas, enemigos)
+
+        for enemigo in enemigos:
+            enemigo.disparar(balas_enemigas, enemigos)
+
+>>>>>>> d56fc05173b198d53df71fbe85a2348bd7b29427
         dibujar_pantalla_juego()
 
         pygame.display.update()
+        clock.tick(360)
+
+        if nivel_1.nivel_terminado(enemigos) and nivel_actual == 1:
+            print("Cargando nivel 2")
+            pygame.display.update()
+            time.sleep(3)
+            enemigos = nivel_2.crear_enemigos_nivel_2()
+            nivel_actual = 2
 
 if __name__ == "__main__":
     main()
