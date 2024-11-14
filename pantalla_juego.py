@@ -3,6 +3,7 @@ import sys
 import time
 import nivel_1
 import game_over  # Importa el módulo de Game Over
+import subprocess
 
 pygame.init()
 
@@ -13,7 +14,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Space Invaders - Juego")
 
 # Variables de todos los elementos que estarán en el juego
-fondo_juego = pygame.image.load("assets/background_game.png") 
+fondo_juego = pygame.image.load("assets/background_game.png")
 nave_jugador = pygame.image.load("assets/sprites_player/player.png")
 yellow = pygame.image.load("assets/yellow_enemy.png")
 yellow2 = pygame.image.load("assets/yellow_enemy_v2.png")
@@ -22,7 +23,14 @@ joke = pygame.image.load("assets/joke_enemy.png")
 boss_yellow = pygame.image.load("assets/boss_yellow.png")
 bala_unidad = pygame.image.load("assets/shot.png")
 
-# Clase de la bala que maneja tanto su velocidad como su movimiento, su sprite/dibujo y su colisión para dañar enemigos
+# Imágenes del menú de pausa
+menu_pausa = pygame.image.load("assets/menu de pausa.png")
+boton_resume = pygame.image.load("assets/button_resume.png")
+boton_restart = pygame.image.load("assets/button_restart_pause.png")
+boton_main_menu = pygame.image.load("assets/button_main_menu.png")
+paused = False  # Variable para controlar el estado de pausa
+
+# Clase de la bala
 class Bala:
     def __init__(self, x, y) -> None:
         self.x = x
@@ -37,7 +45,6 @@ class Bala:
     
     def get_rect(self):
         return pygame.Rect(self.x + (nave_jugador.get_width() // 2) - bala_unidad.get_width() // 2, self.y, bala_unidad.get_width(), bala_unidad.get_height())
-
 
 # Variables del juego
 def reiniciar_juego():
@@ -102,9 +109,53 @@ def dibujar_pantalla_juego():
 
     nivel_1.actualizar_enemigos(enemigos, balas_enemigas, screen)
 
+# Muestra el menú de pausa y sus botones
+def mostrar_menu_pausa():
+    global paused  # Declara global antes de modificar la variable
+    
+    # Dibuja el fondo del juego borroso
+    pausa_fondo = pygame.Surface((screen_width, screen_height))
+    pausa_fondo.set_alpha(128)  # Hace que el fondo se vea translúcido
+    pausa_fondo.fill((0, 0, 0))
+    screen.blit(pausa_fondo, (0, 0))
+
+    # Dibuja el menú de pausa
+    menu_x = (screen_width - menu_pausa.get_width()) // 2
+    menu_y = (screen_height - menu_pausa.get_height()) // 2
+    screen.blit(menu_pausa, (menu_x, menu_y))
+
+    # Dibuja los botones
+    resume_x = (screen_width - boton_resume.get_width()) // 2
+    resume_y = menu_y + 200
+    restart_x = (screen_width - boton_restart.get_width()) // 2
+    restart_y = resume_y + 60
+    main_menu_x = (screen_width - boton_main_menu.get_width()) // 2
+    main_menu_y = restart_y + 60
+    
+    screen.blit(boton_resume, (resume_x, resume_y))
+    screen.blit(boton_restart, (restart_x, restart_y))
+    screen.blit(boton_main_menu, (main_menu_x, main_menu_y))
+    
+    pygame.display.update()
+
+    # Verifica si el mouse ha hecho clic sobre algún botón
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouse_click = pygame.mouse.get_pressed()
+
+    if mouse_click[0]:  # Si el botón izquierdo del ratón ha sido presionado
+        if resume_x <= mouse_x <= resume_x + boton_resume.get_width() and resume_y <= mouse_y <= resume_y + boton_resume.get_height():
+            paused = False  # Reanuda el juego
+        elif restart_x <= mouse_x <= restart_x + boton_restart.get_width() and restart_y <= mouse_y <= restart_y + boton_restart.get_height():
+            reiniciar_juego()  # Reinicia el juego
+            paused = False  # Reanuda el juego
+        elif main_menu_x <= mouse_x <= main_menu_x + boton_main_menu.get_width() and main_menu_y <= mouse_y <= main_menu_y + boton_main_menu.get_height():
+            import main
+            main.main()
+            running = False
+
 # Ciclo principal del juego
 def main():
-    global nave_x, ultimo_disparo
+    global nave_x, ultimo_disparo, paused
     running = True
     while running:
         for event in pygame.event.get():
@@ -112,11 +163,21 @@ def main():
                 pygame.quit()
                 sys.exit()
                 
+            # Detecta la tecla ESC para pausar o reanudar
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = not paused
+
             # Código de las teclas que disparan la bala
             if (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE) or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
-                if time.time() - ultimo_disparo >= cooldown_disparo:
+                if not paused and time.time() - ultimo_disparo >= cooldown_disparo:
                     balas.append(Bala(nave_x, nave_y))
                     ultimo_disparo = time.time()
+
+        # Muestra el menú de pausa si el juego está en pausa
+        if paused:
+            mostrar_menu_pausa()
+            continue  # Salta el resto del ciclo para mantener el juego pausado
 
         # Movimiento del jugador
         keys = pygame.key.get_pressed()
@@ -135,16 +196,18 @@ def main():
             bala_enemiga.mover()
             if bala_enemiga.y > screen_height:
                 balas_enemigas.remove(bala_enemiga)
-        
-        # Detección de colisiones
+
+        # Detecta colisiones
         detectar_colisiones()
         colision_jugador_balas_enemigas()
 
-        for enemigo in enemigos:
-            enemigo.disparar(balas_enemigas, enemigos)
-
+        # Dibuja la pantalla
         dibujar_pantalla_juego()
+
         pygame.display.update()
 
 if __name__ == "__main__":
     main()
+
+
+
