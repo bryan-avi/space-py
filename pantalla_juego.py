@@ -186,6 +186,15 @@ def mostrar_menu_pausa():
             main.main()
             running = False
 
+vidas_sprites = [pygame.image.load("assets/Vidas/lives.png")] + [pygame.image.load(f"assets/Vidas/{i}_lives.png") for i in range(4, 0, -1)]
+def dibujar_vidas(jugador, surface):
+    # Selecciona el sprite correspondiente al número de vidas del jugador
+    if 1 <= jugador.vida <= 5:
+        sprite_vida = vidas_sprites[5 - jugador.vida]  # Selecciona la imagen adecuada con base en las vidas
+        x = 10  # Posición horizontal de la barra de vidas
+        y = 10  # Posición vertical de la barra de vidas
+        surface.blit(sprite_vida, (x, y))
+
 # Ciclo principal del juego
 def main():
     global nave_x, ultimo_disparo, enemigos, paused
@@ -259,6 +268,7 @@ def main():
 
         dibujar_pantalla_juego()
         jugador.dibujar(screen)
+        dibujar_vidas(jugador, screen)
 
         pygame.display.update()
         clock.tick(360)
