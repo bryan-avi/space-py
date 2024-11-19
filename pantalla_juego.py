@@ -33,6 +33,59 @@ boton_restart = pygame.image.load("assets/button_restart_pause.png")
 boton_main_menu = pygame.image.load("assets/button_main_menu.png")
 paused = False  # Variable para controlar el estado de pausa
 
+class Jugador:
+    def __init__(self, x, y, velocidad, imagen):
+        self.x = x
+        self.y = y
+        self.velocidad = velocidad
+        self.imagen = imagen
+        self.vida = 5
+        self.balas = []
+        self.ultimo_disparo = 0
+        self.cooldown_disparo = 0.8  # tiempo de recarga entre disparos
+
+    # Movimiento del jugador
+    def mover(self, keys, screen_width):
+        if keys[pygame.K_LEFT] and self.x > 0:
+            self.x -= self.velocidad
+        if keys[pygame.K_RIGHT] and self.x < screen_width - self.imagen.get_width():
+            self.x += self.velocidad
+
+    # Disparar una bala
+    def disparar(self):
+        global balas
+        if time.time() - self.ultimo_disparo >= self.cooldown_disparo:
+            bala = Bala(self.x, self.y)
+            balas.append(bala)
+            self.ultimo_disparo = time.time()
+
+    # Dibuja el jugador en la pantalla
+    def dibujar(self, surface):
+        surface.blit(self.imagen, (self.x, self.y))
+
+    # Detecta colisiones entre las balas del jugador y los enemigos
+    def detectar_colisiones(self, enemigos):
+        global balas, balas_enemigas
+        for bala in balas[:]:
+            for enemigo in enemigos[:]:
+                if bala.get_rect().colliderect(enemigo.get_rect()):
+                    balas.remove(bala)
+                    if enemigo.recibir_daño():
+                        enemigos.remove(enemigo)
+                    break
+
+    # Detecta las colisiones entre las balas enemigas y el jugador
+    def colision_con_balas_enemigas(self, balas_enemigas):
+        jugador_rect = pygame.Rect(self.x, self.y, self.imagen.get_width(), self.imagen.get_height())
+        for bala in balas_enemigas[:]:
+            if jugador_rect.colliderect(bala.get_rect()):
+                self.vida -= 1
+                balas_enemigas.remove(bala)
+                if self.vida <= 0:
+                    game_over.game_over_screen()  # Llama a la pantalla de Game Over
+                    return False  # El juego termina
+        return True  # El jugador sigue con vida
+
 # Clase de la bala
 class Bala:
     def __init__(self, x, y) -> None:
@@ -67,28 +120,6 @@ velocidad_fondo = 0.7
 velocidad_jugador = 0.8
 cooldown_disparo = 0.8
 
-# Detecta colisiones entre balas y enemigos
-def detectar_colisiones():
-    global enemigos, balas
-    for bala in balas[:]:
-        for enemigo in enemigos[:]:
-            if bala.get_rect().colliderect(enemigo.get_rect()):
-                balas.remove(bala)
-                if enemigo.recibir_daño():
-                    enemigos.remove(enemigo)
-                break
-
-# Detecta colisiones entre balas enemigas y el jugador
-def colision_jugador_balas_enemigas():
-    global vida_jugador, balas_enemigas
-    jugador_rect = pygame.Rect(nave_x, nave_y, nave_jugador.get_width(), nave_jugador.get_height())
-    for bala in balas_enemigas[:]:
-        if jugador_rect.colliderect(bala.get_rect()):
-            vida_jugador -= 1
-            balas_enemigas.remove(bala)
-            if vida_jugador <= 0:
-                game_over.game_over_screen()  # Llama a la pantalla de Game Over
-                return  # Salir de la función para detener el juego
 
 # Dibuja todos los elementos en la pantalla del juego
 def dibujar_pantalla_juego():
@@ -102,15 +133,13 @@ def dibujar_pantalla_juego():
     screen.blit(fondo_juego, (0, fondo_y))  # Dibujar el fondo en la nueva posición
     screen.blit(fondo_juego, (0, fondo_y - screen_height))  # Para cubrir toda la pantalla
     
-    screen.blit(nave_jugador, (nave_x, nave_y))  # Nave del jugador
-    
     for bala in balas:
         bala.dibujar_bala(screen)
     
     for bala_enemiga in balas_enemigas:
         bala_enemiga.dibujar_bala(screen)
-
-    nivel_final.actualizar_enemigos_nivel_3(enemigos, balas_enemigas, screen)
+        
+    nivel_1.actualizar_enemigos(enemigos, balas_enemigas, screen)
 
 # Muestra el menú de pausa y sus botones
 def mostrar_menu_pausa():
@@ -152,21 +181,19 @@ def mostrar_menu_pausa():
             reiniciar_juego()  # Reinicia el juego
             paused = False  # Reanuda el juego
         elif main_menu_x <= mouse_x <= main_menu_x + boton_main_menu.get_width() and main_menu_y <= mouse_y <= main_menu_y + boton_main_menu.get_height():
+            paused = False
             import main
             main.main()
             running = False
 
 # Ciclo principal del juego
 def main():
-
-    
     global nave_x, ultimo_disparo, enemigos, paused
-
-    enemigos = nivel_final.crear_enemigos_nivel_3()
-
-
+    paused = False
+    enemigos = nivel_1.crear_enemigos_nivel_1()
+    jugador = Jugador(nave_x, nave_y, velocidad_jugador, nave_jugador)
     running = True
-    nivel_actual = 3
+    nivel_actual = 1
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -180,9 +207,8 @@ def main():
 
             # Código de las teclas que disparan la bala
             if (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE) or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
-                if not paused and time.time() - ultimo_disparo >= cooldown_disparo:
-                    balas.append(Bala(nave_x, nave_y))
-                    ultimo_disparo = time.time()
+                if not paused:
+                    jugador.disparar()
 
         # Muestra el menú de pausa si el juego está en pausa
         if paused:
@@ -191,10 +217,7 @@ def main():
 
         # Movimiento del jugador
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and nave_x > 0:
-            nave_x -= velocidad_jugador
-        if keys[pygame.K_RIGHT] and nave_x < screen_width - nave_jugador.get_width():
-            nave_x += velocidad_jugador
+        jugador.mover(keys, screen_width)
 
         # Movimiento y eliminación de balas
         for bala in balas[:]:
@@ -208,11 +231,9 @@ def main():
                 balas_enemigas.remove(bala_enemiga)
 
         # Detecta colisiones
-        detectar_colisiones()
-        colision_jugador_balas_enemigas()
+        jugador.detectar_colisiones(enemigos)
+        jugador.colision_con_balas_enemigas(balas_enemigas)
 
-
-        
         # Si estamos en el nivel 1, simplemente actualizamos los enemigos
         if nivel_actual == 1:
             for enemigo in enemigos:
@@ -237,6 +258,7 @@ def main():
             enemigo.disparar(balas_enemigas, enemigos)
 
         dibujar_pantalla_juego()
+        jugador.dibujar(screen)
 
         pygame.display.update()
         clock.tick(360)
@@ -262,6 +284,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
