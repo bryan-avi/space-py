@@ -261,6 +261,8 @@ def main():
                 enemigo.mover()
                 enemigo.dibujar(screen)
                 enemigo.disparar(balas_enemigas, enemigos)
+                if isinstance(enemigo, BossFinal):
+                    enemigo.disparar_rafaga(balas_enemigas)
                 
 
         for enemigo in enemigos:
