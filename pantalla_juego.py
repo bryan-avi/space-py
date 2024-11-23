@@ -20,10 +20,6 @@ pygame.display.set_caption("Space Invaders - Juego")
 # Variables de todos los elementos que estarán en el juego
 fondo_juego = pygame.image.load("assets/background_game.png")
 nave_jugador = pygame.image.load("assets/sprites_player/player.png")
-yellow = pygame.image.load("assets/yellow_enemy.png")
-yellow2 = pygame.image.load("assets/yellow_enemy_v2.png")
-red = pygame.image.load("assets/red_enemy.png")
-boss_yellow = pygame.image.load("assets/boss_yellow.png")
 bala_unidad = pygame.image.load("assets/shot.png")
 
 # Imágenes del menú de pausa
@@ -43,6 +39,7 @@ class Jugador:
         self.balas = []
         self.ultimo_disparo = 0
         self.cooldown_disparo = 0.8  # tiempo de recarga entre disparos
+        self.puntaje = 0 #Aca se guardara el puntaje del jugador
 
     # Movimiento del jugador
     def mover(self, keys, screen_width):
@@ -71,6 +68,7 @@ class Jugador:
                 if bala.get_rect().colliderect(enemigo.get_rect()):
                     balas.remove(bala)
                     if enemigo.recibir_daño():
+                        self.puntaje += enemigo.puntos #Incrementar el puntaje con respecto a la cantidad de puntos
                         enemigos.remove(enemigo)
                     break
 
@@ -86,6 +84,10 @@ class Jugador:
                     return False  # El juego termina
         return True  # El jugador sigue con vida
 
+    def chequear_vida_extra(self):
+        if self.puntaje >= 500:
+            self.vida += 1
+            self.puntaje -= 500
 # Clase de la bala
 class Bala:
     def __init__(self, x, y) -> None:
@@ -113,6 +115,7 @@ def reiniciar_juego():
     fondo_y = 0
     ultimo_disparo = 0
     enemigos = nivel_1.crear_enemigos_nivel_1()
+    
 
 # Inicialización de variables
 reiniciar_juego()
@@ -195,6 +198,14 @@ def dibujar_vidas(jugador, surface):
         y = 10  # Posición vertical de la barra de vidas
         surface.blit(sprite_vida, (x, y))
 
+def mostrar_puntaje(surface, puntaje, screen_width):
+    font = pygame.font.Font("freesansbold.ttf", 24)  # Fuente para el texto
+    texto = font.render(f"Puntaje: {puntaje}", True, (255, 255, 255))  # Texto en blanco
+    texto_rect = texto.get_rect()  # Obtén las dimensiones del texto
+    texto_rect.topright = (screen_width - 10, 10)  # Posición en la esquina superior derecha con un margen de 10 px
+    surface.blit(texto, texto_rect)  # Dibujar el puntaje en la pantalla
+
+
 # Ciclo principal del juego
 def main():
     global nave_x, ultimo_disparo, enemigos, paused
@@ -208,7 +219,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-                
+
             # Detecta la tecla ESC para pausar o reanudar
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -223,7 +234,8 @@ def main():
         if paused:
             mostrar_menu_pausa()
             continue  # Salta el resto del ciclo para mantener el juego pausado
-
+        
+        tiempo_actual = pygame.time.get_ticks()
         # Movimiento del jugador
         keys = pygame.key.get_pressed()
         jugador.mover(keys, screen_width)
@@ -242,35 +254,24 @@ def main():
         # Detecta colisiones
         jugador.detectar_colisiones(enemigos)
         jugador.colision_con_balas_enemigas(balas_enemigas)
-
-        # Si estamos en el nivel 1, simplemente actualizamos los enemigos
-        if nivel_actual == 1:
-            for enemigo in enemigos:
-                enemigo.mover()
-                enemigo.dibujar(screen)
-                enemigo.disparar(balas_enemigas, enemigos)
-        # Si estamos en el nivel 2, actualizamos los enemigos y el joker
-        elif nivel_actual == 2:
-            for enemigo in enemigos:
-                enemigo.mover()
-                enemigo.dibujar(screen)
-                enemigo.disparar(balas_enemigas, enemigos)
         
-        elif nivel_actual == 3:
-            for enemigo in enemigos:
-                enemigo.mover()
-                enemigo.dibujar(screen)
-                enemigo.disparar(balas_enemigas, enemigos)
-                if isinstance(enemigo, BossFinal):
-                    enemigo.disparar_rafaga(balas_enemigas)
-                
+        #Funcione que detecta y da una vida extra
+        jugador.chequear_vida_extra()
 
+        # Logica que se encarga de cargar los enemigos de cada nivel (1, 2 y 3)
         for enemigo in enemigos:
+            enemigo.mover()
+            enemigo.dibujar(screen)
             enemigo.disparar(balas_enemigas, enemigos)
+
+            # En el nivel 3, gestionamos el jefe
+            if nivel_actual == 3 and isinstance(enemigo, BossFinal):
+                enemigo.disparar_rafaga(balas_enemigas)
 
         dibujar_pantalla_juego()
         jugador.dibujar(screen)
         dibujar_vidas(jugador, screen)
+        mostrar_puntaje(screen, jugador.puntaje, screen_width)
 
         pygame.display.update()
         clock.tick(360)

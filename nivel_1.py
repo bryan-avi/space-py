@@ -19,6 +19,7 @@ class EnemigoYellow:
         self.vida = 1 #Vida del enemigo
         self.cooldown_disparo = random.uniform(1, 3) # Tiempo de espera entre disparo
         self.ultimo_disparo = 0 # Momento del ultimo disparo
+        self.puntos = 10 #Puntos que dara al ser eliminado
 
     def mover(self):
         # Movimiento de lado a lado

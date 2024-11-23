@@ -32,6 +32,7 @@ class Enemigo_Yellow_2:
         self.vida = 2
         self.cooldown_disparo = random.uniform(1, 3)
         self.ultimo_disparo = 0
+        self.puntos = 20
 
     def mover(self):
         self.x += self.velocidad * self.direccion
@@ -70,6 +71,7 @@ class EnemigoJoker:
         self.cooldown_disparo = random.uniform(1, 2)  # El tiempo de espera entre disparos
         self.ultimo_disparo = 0  # Marca de tiempo del último disparo
         self.ultimo_telentransporte = time.time()
+        self.puntos = 25
 
     def mover(self):
         # El Joker se "teletransporta" a una nueva posición aleatoria después de cierto tiempo

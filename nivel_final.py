@@ -2,6 +2,7 @@ import pygame
 import time
 import random
 
+
 red = pygame.image.load("assets/red_enemy.png")
 jefe_imagen = pygame.image.load("assets/boss_2.png")
 bala_enemiga = pygame.image.load("assets/shot_enemy.png")
@@ -33,6 +34,7 @@ class Enemigo_Red:
         self.vida = 3
         self.cooldown_disparo = random.uniform(0.8, 1.5)
         self.ultimo_disparo = 0
+        self.puntos = 50
     
     def mover(self):
         self.x += self.velocidad * self.direccion
@@ -73,6 +75,7 @@ class BossFinal:
         self.cooldown_rafaga = 1.5  # Tiempo entre ráfagas en segundos
         self.rafaga_actual = 0 # Contador de balas en la ráfaga
         self.velocidad = 0.001
+        self.puntos = 100
 
     def mover(self):
         self.y += self.velocidad
@@ -114,7 +117,7 @@ def crear_enemigos_nivel_3():
 
     # Enemigos en el lado izquierdo
     for fila in range(2):  # Dos filas de enemigos
-        for columna in range(4):  # Cuatro enemigos por fila
+        for columna in range(3):  # Cuatro enemigos por fila
             x = 50 + columna * 80  # Enemigos en el lado izquierdo
             y = pos_enemigos_y + fila * 60  # Coloca los enemigos debajo del jefe
             enemigo = Enemigo_Red(x, y)
@@ -122,7 +125,7 @@ def crear_enemigos_nivel_3():
 
     # Enemigos en el lado derecho
     for fila in range(2):  # Dos filas de enemigos
-        for columna in range(4):  # Cuatro enemigos por fila
+        for columna in range(3):  # Cuatro enemigos por fila
             x = 400 + columna * 80  # Enemigos en el lado derecho
             y = pos_enemigos_y + fila * 60  # Coloca los enemigos debajo del jefe
             enemigo = Enemigo_Red(x, y)
