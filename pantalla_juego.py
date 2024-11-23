@@ -40,6 +40,7 @@ class Jugador:
         self.ultimo_disparo = 0
         self.cooldown_disparo = 0.8  # tiempo de recarga entre disparos
         self.puntaje = 0 #Aca se guardara el puntaje del jugador
+        self.ultima_vida_extra = 0 #Nuevo atributo para controlar las vidas extras
 
     # Movimiento del jugador
     def mover(self, keys, screen_width):
@@ -77,6 +78,7 @@ class Jugador:
         jugador_rect = pygame.Rect(self.x, self.y, self.imagen.get_width(), self.imagen.get_height())
         for bala in balas_enemigas[:]:
             if jugador_rect.colliderect(bala.get_rect()):
+                print(self.vida)
                 self.vida -= 1
                 balas_enemigas.remove(bala)
                 if self.vida <= 0:
@@ -85,9 +87,11 @@ class Jugador:
         return True  # El jugador sigue con vida
 
     def chequear_vida_extra(self):
-        if self.puntaje >= 500:
-            self.vida += 1
-            self.puntaje -= 500
+        # Otorga una vida extra por cada 500 puntos, pero solo una vez por umbral
+        if self.puntaje >= self.ultima_vida_extra + 500:
+            self.vida = min(self.vida + 1, 5)  # Máximo de 5 vidas
+            self.ultima_vida_extra += 500
+
 # Clase de la bala
 class Bala:
     def __init__(self, x, y) -> None:
