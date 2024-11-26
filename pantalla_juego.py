@@ -31,7 +31,6 @@ paused = False  # Variable para controlar el estado de pausa
 
 class Jugador:
     def __init__(self, x, y, velocidad, imagen):
-        global vida
         self.x = x
         self.y = y
         self.velocidad = velocidad
@@ -112,8 +111,8 @@ class Bala:
 
 
 # Variables del juego
-def reiniciar_juego():
-    global nave_x, nave_y, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo, Jugador
+def reiniciar_juego(jugador):
+    global nave_x, nave_y, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo
     nave_x = (screen_width - nave_jugador.get_width()) // 2
     nave_y = screen_height - nave_jugador.get_height() - 50
     balas = []
@@ -121,13 +120,17 @@ def reiniciar_juego():
     fondo_y = 0
     ultimo_disparo = 0
     enemigos = nivel_1.crear_enemigos_nivel_1()
-    
+
+    jugador.vida = 5
+
 # Inicialización de variables
-reiniciar_juego()
 velocidad_fondo = 0.7
 velocidad_jugador = 0.8
 cooldown_disparo = 0.8
-
+nave_x = (screen_width - nave_jugador.get_width()) // 2
+nave_y = screen_height - nave_jugador.get_height() - 50
+jugador = Jugador(nave_x, nave_y, velocidad_jugador, nave_jugador)
+reiniciar_juego(jugador)
 
 
 # Dibuja todos los elementos en la pantalla del juego
@@ -187,7 +190,7 @@ def mostrar_menu_pausa():
         if resume_x <= mouse_x <= resume_x + boton_resume.get_width() and resume_y <= mouse_y <= resume_y + boton_resume.get_height():
             paused = False  # Reanuda el juego
         elif restart_x <= mouse_x <= restart_x + boton_restart.get_width() and restart_y <= mouse_y <= restart_y + boton_restart.get_height():
-            reiniciar_juego()  # Reinicia el juego
+            reiniciar_juego(jugador)  # Reinicia el juego
             paused = False  # Reanuda el juego
         elif main_menu_x <= mouse_x <= main_menu_x + boton_main_menu.get_width() and main_menu_y <= mouse_y <= main_menu_y + boton_main_menu.get_height():
             paused = False
@@ -217,7 +220,6 @@ def main():
     global nave_x, ultimo_disparo, enemigos, paused
     paused = False
     enemigos = nivel_1.crear_enemigos_nivel_1()
-    jugador = Jugador(nave_x, nave_y, velocidad_jugador, nave_jugador)
     running = True
     nivel_actual = 1
     while running:
