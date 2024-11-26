@@ -31,6 +31,7 @@ paused = False  # Variable para controlar el estado de pausa
 
 class Jugador:
     def __init__(self, x, y, velocidad, imagen):
+        global vida
         self.x = x
         self.y = y
         self.velocidad = velocidad
@@ -41,6 +42,7 @@ class Jugador:
         self.cooldown_disparo = 0.8  # tiempo de recarga entre disparos
         self.puntaje = 0 #Aca se guardara el puntaje del jugador
         self.ultima_vida_extra = 0 #Nuevo atributo para controlar las vidas extras
+
 
     # Movimiento del jugador
     def mover(self, keys, screen_width):
@@ -108,24 +110,24 @@ class Bala:
     def get_rect(self):
         return pygame.Rect(self.x + (nave_jugador.get_width() // 2) - bala_unidad.get_width() // 2, self.y, bala_unidad.get_width(), bala_unidad.get_height())
 
+
 # Variables del juego
 def reiniciar_juego():
-    global nave_x, nave_y, vida_jugador, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo
+    global nave_x, nave_y, balas, enemigos, balas_enemigas, fondo_y, ultimo_disparo, Jugador
     nave_x = (screen_width - nave_jugador.get_width()) // 2
     nave_y = screen_height - nave_jugador.get_height() - 50
-    vida_jugador = 5
     balas = []
     balas_enemigas = []
     fondo_y = 0
     ultimo_disparo = 0
     enemigos = nivel_1.crear_enemigos_nivel_1()
     
-
 # Inicialización de variables
 reiniciar_juego()
 velocidad_fondo = 0.7
 velocidad_jugador = 0.8
 cooldown_disparo = 0.8
+
 
 
 # Dibuja todos los elementos en la pantalla del juego
@@ -238,8 +240,7 @@ def main():
         if paused:
             mostrar_menu_pausa()
             continue  # Salta el resto del ciclo para mantener el juego pausado
-        
-        tiempo_actual = pygame.time.get_ticks()
+
         # Movimiento del jugador
         keys = pygame.key.get_pressed()
         jugador.mover(keys, screen_width)
