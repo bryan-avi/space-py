@@ -203,8 +203,8 @@ def dibujar_vidas(jugador, surface):
         surface.blit(sprite_vida, (x, y))
 
 def mostrar_puntaje(surface, puntaje, screen_width):
-    font = pygame.font.Font("freesansbold.ttf", 24)  # Fuente para el texto
-    texto = font.render(f"Puntaje: {puntaje}", True, (255, 255, 255))  # Texto en blanco
+    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 34)  # Fuente para el texto
+    texto = font.render(f"SCORE: {puntaje}", True, (255, 255, 255))  # Texto en blanco
     texto_rect = texto.get_rect()  # Obtén las dimensiones del texto
     texto_rect.topright = (screen_width - 10, 10)  # Posición en la esquina superior derecha con un margen de 10 px
     surface.blit(texto, texto_rect)  # Dibujar el puntaje en la pantalla
