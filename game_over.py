@@ -3,7 +3,6 @@ import pygame
 import sys
 import pantalla_juego
 from main import main
-from pantalla_juego import Jugador
 
 pygame.init()
 
@@ -50,6 +49,7 @@ def game_over_screen():
                     running = False
                 elif is_over_button(event.pos, boton_reiniciar_x, boton_reiniciar_y, boton_reiniciar):
                     # Reiniciar el juego en el nivel 1
+                    from pantalla_juego import Jugador
                     pantalla_juego.reiniciar_juego(Jugador)  # Llamar a la función de reinicio
                     pantalla_juego.main()  # Llamar a la función main de la pantalla de juego
                     running = False
