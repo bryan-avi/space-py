@@ -29,6 +29,11 @@ boton_restart = pygame.image.load("assets/button_restart_pause.png")
 boton_main_menu = pygame.image.load("assets/button_main_menu.png")
 paused = False  # Variable para controlar el estado de pausa
 
+def guardar_puntaje(nombre, puntaje):
+    with open("puntaje.txt", "a") as archivo:
+        archivo.write(f"{nombre}: {puntaje}\n")
+    print("Puntaje guardado correctamente.")
+
 class Jugador:
     def __init__(self, x, y, velocidad, imagen):
         self.x = x
@@ -75,7 +80,7 @@ class Jugador:
                     break
 
     # Detecta las colisiones entre las balas enemigas y el jugador
-    def colision_con_balas_enemigas(self, balas_enemigas):
+    def colision_con_balas_enemigas(self, balas_enemigas, nombre_jugador):
         jugador_rect = pygame.Rect(self.x, self.y, self.imagen.get_width(), self.imagen.get_height())
         for bala in balas_enemigas[:]:
             if jugador_rect.colliderect(bala.get_rect()):
@@ -83,6 +88,7 @@ class Jugador:
                 self.vida -= 1
                 balas_enemigas.remove(bala)
                 if self.vida <= 0:
+                    guardar_puntaje(nombre_jugador, jugador.puntaje)
                     game_over.game_over_screen()  # Llama a la pantalla de Game Over
                     return False  # El juego termina
         return True  # El jugador sigue con vida
@@ -122,6 +128,7 @@ def reiniciar_juego(jugador):
     enemigos = nivel_1.crear_enemigos_nivel_1()
 
     jugador.vida = 5
+    jugador.puntaje = 0
 
 # Inicialización de variables
 velocidad_fondo = 0.7
@@ -194,6 +201,7 @@ def mostrar_menu_pausa():
             paused = False  # Reanuda el juego
         elif main_menu_x <= mouse_x <= main_menu_x + boton_main_menu.get_width() and main_menu_y <= mouse_y <= main_menu_y + boton_main_menu.get_height():
             paused = False
+            reiniciar_juego(jugador)
             import main
             main.main()
             running = False
@@ -216,7 +224,7 @@ def mostrar_puntaje(surface, puntaje, screen_width):
 
 
 # Ciclo principal del juego
-def main():
+def main(nombre_jugador):
     global nave_x, ultimo_disparo, enemigos, paused
     paused = False
     enemigos = nivel_1.crear_enemigos_nivel_1()
@@ -260,7 +268,7 @@ def main():
 
         # Detecta colisiones
         jugador.detectar_colisiones(enemigos)
-        jugador.colision_con_balas_enemigas(balas_enemigas)
+        jugador.colision_con_balas_enemigas(balas_enemigas, nombre_jugador)
         
         #Funcione que detecta y da una vida extra
         jugador.chequear_vida_extra()
@@ -301,6 +309,8 @@ def main():
         elif nivel_final.nivel_terminado(enemigos) and nivel_actual == 3:
             print("¡Has ganado el juego!")
             running = False
+
+            guardar_puntaje(nombre_jugador, jugador.puntaje)
 
 if __name__ == "__main__":
     main()

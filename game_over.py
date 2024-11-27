@@ -43,14 +43,15 @@ def game_over_screen():
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if is_over_button(event.pos, boton_menu_x, boton_menu_y, boton_menu):
-                    pantalla_juego.reiniciar_juego()
+                    from pantalla_juego import jugador
+                    pantalla_juego.reiniciar_juego(jugador)
                     import main
                     main.main()
                     running = False
                 elif is_over_button(event.pos, boton_reiniciar_x, boton_reiniciar_y, boton_reiniciar):
                     # Reiniciar el juego en el nivel 1
-                    from pantalla_juego import Jugador
-                    pantalla_juego.reiniciar_juego(Jugador)  # Llamar a la función de reinicio
+                    from pantalla_juego import jugador
+                    pantalla_juego.reiniciar_juego(jugador)  # Llamar a la función de reinicio
                     pantalla_juego.main()  # Llamar a la función main de la pantalla de juego
                     running = False
 
