@@ -222,6 +222,13 @@ def mostrar_puntaje(surface, puntaje, screen_width):
     texto_rect.topright = (screen_width - 10, 10)  # Posición en la esquina superior derecha con un margen de 10 px
     surface.blit(texto, texto_rect)  # Dibujar el puntaje en la pantalla
 
+# Función para dibujar el nombre del jugador
+def mostrar_nombre_jugador(screen, nombre_jugador, color=(255, 255, 255)):
+    # Definir la fuente y el tamaño
+    font = pygame.font.Font(None, 36)  # Fuente predeterminada, tamaño 36
+    texto = font.render(f" {nombre_jugador}", True, color)  # Crear el texto
+    # Dibujar el texto en la pantalla (coordenadas (x, y) = (ancho/2 - mitad del texto, 20))
+    screen.blit(texto, (screen_width // 2 - texto.get_width() // 2, 20))
 
 # Ciclo principal del juego
 def main(nombre_jugador):
@@ -287,6 +294,9 @@ def main(nombre_jugador):
         jugador.dibujar(screen)
         dibujar_vidas(jugador, screen)
         mostrar_puntaje(screen, jugador.puntaje, screen_width)
+
+        # Mostrar el nombre del jugador en la parte superior de la pantalla
+        mostrar_nombre_jugador(screen, nombre_jugador)
 
         pygame.display.update()
         clock.tick(360)
