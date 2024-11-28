@@ -6,16 +6,16 @@ from main import main
 
 pygame.init()
 
-# Dimensiones de la pantalla
+
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Cargar los assets
-fondo_game_over = pygame.image.load("assets/game_over_background.png")  # Fondo de Game Over
-titulo_game_over = pygame.image.load("assets/logo_game_over.png")  # Título de Game Over
-boton_menu = pygame.image.load("assets/button_menu_go.png")  # Botón para regresar al menú
-boton_reiniciar = pygame.image.load("assets/button_restart.png")  # Botón para reiniciar el juego
+fondo_game_over = pygame.image.load("assets/game_over_background.png") 
+titulo_game_over = pygame.image.load("assets/logo_game_over.png")  
+boton_menu = pygame.image.load("assets/button_menu_go.png")  
+boton_reiniciar = pygame.image.load("assets/button_restart.png")  
 
 # Posiciones de los elementos
 titulo_x = (screen_width - titulo_game_over.get_width()) // 2

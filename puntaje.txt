@@ -1,3 +1,9 @@
 Maik: 1345
 John: 50
 Maik: 100
+MAIK: 120
+gcg: 230
+yeirel: 20
+Yeirel: 30
+Yeirel: 10
+Yeirel: 30
