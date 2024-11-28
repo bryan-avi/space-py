@@ -26,7 +26,7 @@ font = pygame.font.Font(None, 36)
 
 # Función para leer y procesar los puntajes del archivo
 def leer_puntajes(archivo):
-    puntajes = defaultdict(int)  # Diccionario para acumular los puntajes
+    puntajes = defaultdict(int)  # Diccionario para guardar el mayor puntaje de cada jugador
     try:
         with open(archivo, "r") as file:
             for line in file:
@@ -34,9 +34,14 @@ def leer_puntajes(archivo):
                     nombre, puntaje = line.strip().split(":")
                     nombre = nombre.strip().capitalize()  # Normalizar el nombre
                     puntaje = int(puntaje.strip())  # Convertir el puntaje a entero
-                    puntajes[nombre] += puntaje  # Sumar puntaje al jugador
+                    # Guardar solo el mayor puntaje para cada jugador
+                    if nombre in puntajes:
+                        puntajes[nombre] = max(puntajes[nombre], puntaje)
+                    else:
+                        puntajes[nombre] = puntaje
     except FileNotFoundError:
         pass  # Si no existe el archivo, devuelve un diccionario vacío
+    # Ordenar por puntaje de mayor a menor
     return sorted(puntajes.items(), key=lambda x: x[1], reverse=True)  # Ordenar por puntaje descendente
 
 # Función para dibujar la pantalla del ranking
