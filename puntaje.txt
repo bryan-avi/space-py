@@ -1,3 +1,8 @@
 Maik: 1345
 John: 50
 Maik: 100
+Maik: 0
+Maik: 20
+Maik: 30
+Maik: 130
+Maik: 170

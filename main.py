@@ -1,6 +1,7 @@
 import pygame
 import sys
-import pantalla_juego 
+import pantalla_juego
+import game_over
 
 pygame.init()
 
@@ -115,6 +116,7 @@ def main():
                     nombre_jugador = solicitar_nombre()
                     if nombre_jugador:
                         pantalla_juego.main(nombre_jugador)
+                        game_over.pantalla_juego.main(nombre_jugador)
                         return
         mouse_pos = pygame.mouse.get_pos()
         if is_over_button(mouse_pos):

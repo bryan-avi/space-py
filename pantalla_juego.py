@@ -89,7 +89,7 @@ class Jugador:
                 balas_enemigas.remove(bala)
                 if self.vida <= 0:
                     guardar_puntaje(nombre_jugador, jugador.puntaje)
-                    game_over.game_over_screen()  # Llama a la pantalla de Game Over
+                    game_over.game_over_screen(nombre_jugador)  # Llama a la pantalla de Game Over
                     return False  # El juego termina
         return True  # El jugador sigue con vida
 
@@ -290,6 +290,7 @@ def main(nombre_jugador):
             if nivel_actual == 3 and isinstance(enemigo, BossFinal):
                 enemigo.disparar_rafaga(balas_enemigas)
 
+        #Funciones llamadas que se encargan de dibujar la pantalla, el jugador, sus vidas y mostrar el puntaje
         dibujar_pantalla_juego()
         jugador.dibujar(screen)
         dibujar_vidas(jugador, screen)

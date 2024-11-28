@@ -4,6 +4,7 @@ import sys
 import pantalla_juego
 from main import main
 
+
 pygame.init()
 
 # Dimensiones de la pantalla
@@ -33,7 +34,7 @@ def is_over_button(pos, button_x, button_y, button_img):
     return button_x <= pos[0] <= button_x + button_img.get_width() and button_y <= pos[1] <= button_y + button_img.get_height()
 
 # Función principal de la pantalla Game Over
-def game_over_screen():
+def game_over_screen(nombre_jugador):
     global fondo_y
     running = True
     while running:
@@ -52,7 +53,7 @@ def game_over_screen():
                     # Reiniciar el juego en el nivel 1
                     from pantalla_juego import jugador
                     pantalla_juego.reiniciar_juego(jugador)  # Llamar a la función de reinicio
-                    pantalla_juego.main()  # Llamar a la función main de la pantalla de juego
+                    pantalla_juego.main(nombre_jugador)  # Llamar a la función main de la pantalla de juego
                     running = False
 
         # Actualizar la posición del fondo
