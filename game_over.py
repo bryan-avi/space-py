@@ -2,8 +2,6 @@
 import pygame
 import sys
 import pantalla_juego
-from main import main
-
 
 pygame.init()
 

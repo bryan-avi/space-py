@@ -125,11 +125,11 @@ def main():
                         return
                 
                 if is_over_button(event.pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
-                    ranking.main()  
-                    return
+                    ranking.main()
+                    
         mouse_pos = pygame.mouse.get_pos()
         if is_over_button(mouse_pos, boton_x, boton_y, boton_start.get_width(), boton_start.get_height()) or \
-           is_over_button(mouse_pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
+            is_over_button(mouse_pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
