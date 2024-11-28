@@ -2,6 +2,7 @@ import pygame
 import sys
 import pantalla_juego
 import game_over
+import ranking  
 
 pygame.init()
 
@@ -14,6 +15,7 @@ pygame.display.set_caption("Space Invaders - Pantalla de Inicio")
 fondo = pygame.image.load("assets/background.png")
 logo = pygame.image.load("assets/logo.png")
 boton_start = pygame.image.load("assets/button_start.png")
+boton_ranking = pygame.image.load("assets/button_ranking.png") 
 
 fondo_x1 = 0
 fondo_x2 = screen_width
@@ -23,13 +25,15 @@ logo_x = (screen_width - logo.get_width()) // 2
 logo_y = 100
 boton_x = (screen_width - boton_start.get_width()) // 2
 boton_y = 400
+boton_ranking_x = boton_x 
+boton_ranking_y = boton_y + boton_start.get_height() + 20  
 
 archivo_nombres = "nombres.txt"
 
 font = pygame.font.Font(None, 36)
 font_big = pygame.font.Font(None, 48)
 
-# esta funcion es para que el fondo se mueva
+# Función para que el fondo se mueva
 def mover_fondo():
     global fondo_x1, fondo_x2
     fondo_x1 -= velocidad_fondo
@@ -41,16 +45,16 @@ def mover_fondo():
     screen.blit(fondo, (fondo_x1, 0))
     screen.blit(fondo, (fondo_x2, 0))
 
+# Función para dibujar la pantalla de inicio
 def dibujar_pantalla_inicio():
     mover_fondo()
     screen.blit(logo, (logo_x, logo_y))
     screen.blit(boton_start, (boton_x, boton_y))
+    screen.blit(boton_ranking, (boton_ranking_x, boton_ranking_y)) 
 
-# Lo que hace esta funcion es para que el cursor cambie cuando este arriba del boton
-def is_over_button(pos):
-    if boton_x <= pos[0] <= boton_x + boton_start.get_width() and boton_y <= pos[1] <= boton_y + boton_start.get_height():
-        return True
-    return False
+# Función para verificar si el cursor está sobre un botón
+def is_over_button(pos, x, y, width, height):
+    return x <= pos[0] <= x + width and y <= pos[1] <= y + height
 
 # Función para guardar nombres en un archivo .txt
 def guardar_nombre_en_txt(nombre, archivo=archivo_nombres):
@@ -112,14 +116,20 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if is_over_button(event.pos):
+                # Detectar clic en el botón "Start"
+                if is_over_button(event.pos, boton_x, boton_y, boton_start.get_width(), boton_start.get_height()):
                     nombre_jugador = solicitar_nombre()
                     if nombre_jugador:
                         pantalla_juego.main(nombre_jugador)
                         game_over.pantalla_juego.main(nombre_jugador)
                         return
+                
+                if is_over_button(event.pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
+                    ranking.main()  
+                    return
         mouse_pos = pygame.mouse.get_pos()
-        if is_over_button(mouse_pos):
+        if is_over_button(mouse_pos, boton_x, boton_y, boton_start.get_width(), boton_start.get_height()) or \
+           is_over_button(mouse_pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)

@@ -6,3 +6,7 @@ Maik: 20
 Maik: 30
 Maik: 130
 Maik: 170
+yeirel: 20
+Yeirel: 30
+Yeirel: 10
+Yeirel: 30
