@@ -12,3 +12,5 @@ Yeirel: 10
 Yeirel: 30
 Maik: 100
 Maik: 645
+Yeirel: 1245
+yeirel: 90

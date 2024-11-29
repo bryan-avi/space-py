@@ -79,6 +79,16 @@ def nombre_existente(nombre, archivo=archivo_nombres):
 def solicitar_nombre():
     nombre = ""
     input_active = True
+
+    # Cargar el fondo y la fuente
+    fondo = pygame.image.load("assets/menu_player.png")
+    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 40)  # Fuente para instrucciones
+    font_big = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 58)  # Fuente para el nombre ingresado
+
+    # Colores personalizados
+    color_instruccion = (255, 255, 255) 
+    color_nombre = (0, 200, 255) 
+
     while input_active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -97,14 +107,16 @@ def solicitar_nombre():
                     nombre += event.unicode  # Agregar caracteres
 
         # Dibujar la pantalla de entrada de nombre
-        screen.fill((0, 0, 0))  # Fondo negro para el pop-up
-        texto_instruccion = font.render("Ingresa tu nombre y presiona Enter:", True, (255, 255, 255))
-        texto_nombre = font_big.render(nombre, True, (255, 255, 255))
+        screen.blit(fondo, (0, 0))  # Dibujar el fondo en toda la pantalla
+        texto_instruccion = font.render("Ingresa tu nombre y presiona Enter:", True, color_instruccion)
+        texto_nombre = font_big.render(nombre, True, color_nombre)
         
         # Centramos los textos en la pantalla
         screen.blit(texto_instruccion, (screen_width // 2 - texto_instruccion.get_width() // 2, screen_height // 2 - 50))
         screen.blit(texto_nombre, (screen_width // 2 - texto_nombre.get_width() // 2, screen_height // 2))
         pygame.display.update()
+
+
 
 # Loop principal del juego
 def main():
