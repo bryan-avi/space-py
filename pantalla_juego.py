@@ -28,11 +28,41 @@ boton_resume = pygame.image.load("assets/button_resume.png")
 boton_restart = pygame.image.load("assets/button_restart_pause.png")
 boton_main_menu = pygame.image.load("assets/button_main_menu.png")
 paused = False  # Variable para controlar el estado de pausa
+sonido_disparo = pygame.mixer.Sound("assets/shotsound.mp3")
+sonido_disparo.set_volume(0.5)
+
+explosion_frames = [
+    pygame.image.load(f"assets/Explociones/explocion_{i}.png").convert_alpha()
+    for i in range(1, 8)
+]
 
 def guardar_puntaje(nombre, puntaje):
     with open("puntaje.txt", "a") as archivo:
         archivo.write(f"{nombre}: {puntaje}\n")
     print("Puntaje guardado correctamente.")
+
+class Explosion:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.frames = explosion_frames
+        self.frame_index = 0
+        self.tiempo_inicial = time.time()
+        self.duracion_frame = 0.1  # Tiempo entre frames (en segundos)
+
+    def actualizar(self):
+        # Cambiar de frame según el tiempo
+        if time.time() - self.tiempo_inicial >= self.duracion_frame:
+            self.tiempo_inicial = time.time()
+            self.frame_index += 1
+
+    def dibujar(self, surface):
+        if self.frame_index < len(self.frames):
+            surface.blit(self.frames[self.frame_index], (self.x, self.y))
+
+    def ha_terminado(self):
+        return self.frame_index >= len(self.frames)
+
 
 class Jugador:
     def __init__(self, x, y, velocidad, imagen):
@@ -62,13 +92,14 @@ class Jugador:
             bala = Bala(self.x, self.y)
             balas.append(bala)
             self.ultimo_disparo = time.time()
+            sonido_disparo.play()
 
     # Dibuja el jugador en la pantalla
     def dibujar(self, surface):
         surface.blit(self.imagen, (self.x, self.y))
 
     # Detecta colisiones entre las balas del jugador y los enemigos
-    def detectar_colisiones(self, enemigos):
+    def detectar_colisiones(self, enemigos, explosiones):
         global balas, balas_enemigas
         for bala in balas[:]:
             for enemigo in enemigos[:]:
@@ -77,6 +108,7 @@ class Jugador:
                     if enemigo.recibir_daño():
                         self.puntaje += enemigo.puntos #Incrementar el puntaje con respecto a la cantidad de puntos
                         enemigos.remove(enemigo)
+                        explosiones.append(Explosion(enemigo.x, enemigo.y))
                     break
 
     # Detecta las colisiones entre las balas enemigas y el jugador
@@ -232,6 +264,7 @@ def mostrar_nombre_jugador(screen, nombre_jugador, color=(255, 255, 255)):
 
 # Ciclo principal del juego
 def main(nombre_jugador):
+    explosiones = []
     global nave_x, ultimo_disparo, enemigos, paused
     paused = False
     enemigos = nivel_1.crear_enemigos_nivel_1()
@@ -274,18 +307,19 @@ def main(nombre_jugador):
                 balas_enemigas.remove(bala_enemiga)
 
         # Detecta colisiones
-        jugador.detectar_colisiones(enemigos)
+        jugador.detectar_colisiones(enemigos, explosiones)
         jugador.colision_con_balas_enemigas(balas_enemigas, nombre_jugador)
         
         #Funcione que detecta y da una vida extra
         jugador.chequear_vida_extra()
+
 
         # Logica que se encarga de cargar los enemigos de cada nivel (1, 2 y 3)
         for enemigo in enemigos:
             enemigo.mover()
             enemigo.dibujar(screen)
             enemigo.disparar(balas_enemigas, enemigos)
-
+        
             # En el nivel 3, gestionamos el jefe
             if nivel_actual == 3 and isinstance(enemigo, BossFinal):
                 enemigo.disparar_rafaga(balas_enemigas)
@@ -295,6 +329,12 @@ def main(nombre_jugador):
         jugador.dibujar(screen)
         dibujar_vidas(jugador, screen)
         mostrar_puntaje(screen, jugador.puntaje, screen_width)
+
+        for explosion in explosiones[:]:
+            explosion.actualizar()
+            explosion.dibujar(screen)
+            if explosion.ha_terminado():
+                explosiones.remove(explosion)
 
         # Mostrar el nombre del jugador en la parte superior de la pantalla
         mostrar_nombre_jugador(screen, nombre_jugador)

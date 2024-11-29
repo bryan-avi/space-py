@@ -37,6 +37,7 @@ class EnemigoYellow:
     def recibir_daño(self):
         self.vida -= 1
         return self.vida <= 0
+        
     
     def puede_disparar(self, enemigos):
         #Esta funcion verifica si el enemigo no tiene otro delante en la misma columna
