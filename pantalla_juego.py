@@ -225,7 +225,7 @@ def mostrar_puntaje(surface, puntaje, screen_width):
 # Función para dibujar el nombre del jugador
 def mostrar_nombre_jugador(screen, nombre_jugador, color=(255, 255, 255)):
     # Definir la fuente y el tamaño
-    font = pygame.font.Font(None, 36)  # Fuente predeterminada, tamaño 36
+    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 36)  # Fuente predeterminada, tamaño 36
     texto = font.render(f" {nombre_jugador}", True, color)  # Crear el texto
     # Dibujar el texto en la pantalla (coordenadas (x, y) = (ancho/2 - mitad del texto, 20))
     screen.blit(texto, (screen_width // 2 - texto.get_width() // 2, 20))

@@ -49,10 +49,11 @@ def dibujar_pantalla_ranking(puntajes):
     screen.blit(fondo_ranking, (0, 0))
     screen.blit(boton_volver, (boton_volver_x, boton_volver_y))
 
-    # Mostrar el ranking
-    #Variables para ajustar la posicion de los nombres en el ranking
-    y_offset = 320  #Espacio inicial 
-    espacio_entre_lineas = 50 #Espacio vertical entre lso textos
+   
+    y_offset = 320  
+    espacio_entre_lineas = 50 
+
+    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 50)
 
     for idx, (nombre, puntaje) in enumerate(puntajes):
         texto_nombre = font.render(f"{idx + 1}. {nombre}", True, (255, 255, 255))  # Nombre alineado a la izquierda
