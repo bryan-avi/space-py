@@ -59,4 +59,4 @@ def main(puntaje):
         pygame.display.update()
 
 if __name__ == "__main__":
-    main(0)
+    main()

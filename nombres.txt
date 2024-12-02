@@ -1,19 +1,12 @@
 Maik
 MAIK
-<<<<<<< HEAD
 JohnBry
 Bry
-=======
 JohnYeirel
 Yeirel
-gcg
 yeirel
-122
 Maik
-123
-
 bryhana509
 Bryan
 Brayan
 John
->>>>>>> d069b95f4c249f631547169970ea6ee84e1ee824

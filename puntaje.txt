@@ -1,7 +1,6 @@
 Maik: 1345
 John: 50
 Maik: 100
-<<<<<<< HEAD
 Bry: 270
 Bry: 320
 =======
@@ -30,4 +29,3 @@ Maik: 1345
 Maik: 1345
 Bryan: 30
 John: 1345
->>>>>>> d069b95f4c249f631547169970ea6ee84e1ee824
