@@ -80,12 +80,11 @@ def solicitar_nombre():
     nombre = ""
     input_active = True
 
-    # Cargar el fondo y la fuente
+    
     fondo = pygame.image.load("assets/menu_player.png")
-    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 40)  # Fuente para instrucciones
-    font_big = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 58)  # Fuente para el nombre ingresado
+    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 40)  
+    font_big = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 58)  
 
-    # Colores personalizados
     color_instruccion = (255, 255, 255) 
     color_nombre = (0, 200, 255) 
 
@@ -95,19 +94,19 @@ def solicitar_nombre():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:  # Enter confirma el nombre
-                    if nombre.strip():  # Validar que no esté vacío
+                if event.key == pygame.K_RETURN:  
+                    if nombre.strip():  
                         # Si el nombre ya existe, no lo guardamos, pero dejamos que el jugador continúe
                         if not nombre_existente(nombre.strip()):
                             guardar_nombre_en_txt(nombre.strip())  # Guardar el nombre si no existe
                         return nombre.strip()
-                elif event.key == pygame.K_BACKSPACE:  # Borrar caracteres
+                elif event.key == pygame.K_BACKSPACE:  
                     nombre = nombre[:-1]
                 else:
-                    nombre += event.unicode  # Agregar caracteres
+                    nombre += event.unicode 
 
-        # Dibujar la pantalla de entrada de nombre
-        screen.blit(fondo, (0, 0))  # Dibujar el fondo en toda la pantalla
+        
+        screen.blit(fondo, (0, 0))  
         texto_instruccion = font.render("Ingresa tu nombre y presiona Enter:", True, color_instruccion)
         texto_nombre = font_big.render(nombre, True, color_nombre)
         
