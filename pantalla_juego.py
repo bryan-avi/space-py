@@ -28,6 +28,8 @@ boton_resume = pygame.image.load("assets/button_resume.png")
 boton_restart = pygame.image.load("assets/button_restart_pause.png")
 boton_main_menu = pygame.image.load("assets/button_main_menu.png")
 paused = False  # Variable para controlar el estado de pausa
+
+#Variables que se encargan del sonido
 sonido_disparo = pygame.mixer.Sound("assets/shotsound.mp3")
 sonido_disparo.set_volume(0.5)
 
@@ -358,10 +360,9 @@ def main(nombre_jugador):
 
         # Si el nivel 3 ha terminado (ej. todos los enemigos y el jefe han sido eliminados)
         elif nivel_final.nivel_terminado(enemigos) and nivel_actual == 3:
-            print("¡Has ganado el juego!")
-            running = False
-
             guardar_puntaje(nombre_jugador, jugador.puntaje)
+            import win_menu
+            win_menu.main(jugador.puntaje)
 
 if __name__ == "__main__":
     main()

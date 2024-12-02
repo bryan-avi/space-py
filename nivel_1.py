@@ -7,7 +7,7 @@ yellow = pygame.image.load("assets/yellow_enemy.png")
 bala_enemiga = pygame.image.load("assets/shot_enemy.png")
 
 #Numero maximo de disparos enemigos que puede haber en la pantalla
-MAX_BALAS_ENEMIGAS = 2
+MAX_BALAS_ENEMIGAS = 3
 
 # Definir la clase para el enemigo
 class EnemigoYellow:
@@ -59,7 +59,7 @@ class BalaEnemiga:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.velocidad = 0.5
+        self.velocidad = 0.7
 
     def mover(self):
         self.y += self.velocidad #Mover la bala hacia abajo

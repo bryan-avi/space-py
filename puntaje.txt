@@ -17,7 +17,12 @@ yeirel: 90
 Yeirel: 1245
 Yeirel: 945
 Yeirel: 580
-bryhana509: 1145
-bryhana509: 945
-bryhana509: 1145
+bryhana: 1145
+bryhana: 945
+bryhana: 1145
 Yeirel: 945
+Maik: 1345
+Maik: 1345
+Maik: 1345
+Bryan: 30
+John: 1345

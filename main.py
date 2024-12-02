@@ -2,7 +2,8 @@ import pygame
 import sys
 import pantalla_juego
 import game_over
-import ranking  
+import ranking
+import win_menu
 
 pygame.init()
 
