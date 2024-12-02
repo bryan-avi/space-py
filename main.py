@@ -1,6 +1,9 @@
 import pygame
 import sys
-import pantalla_juego 
+import pantalla_juego
+import game_over
+import ranking
+import win_menu
 
 pygame.init()
 
@@ -13,6 +16,7 @@ pygame.display.set_caption("Space Invaders - Pantalla de Inicio")
 fondo = pygame.image.load("assets/background.png")
 logo = pygame.image.load("assets/logo.png")
 boton_start = pygame.image.load("assets/button_start.png")
+boton_ranking = pygame.image.load("assets/button_ranking.png") 
 
 fondo_x1 = 0
 fondo_x2 = screen_width
@@ -22,13 +26,15 @@ logo_x = (screen_width - logo.get_width()) // 2
 logo_y = 100
 boton_x = (screen_width - boton_start.get_width()) // 2
 boton_y = 400
+boton_ranking_x = boton_x 
+boton_ranking_y = boton_y + boton_start.get_height() + 20  
 
 archivo_nombres = "nombres.txt"
 
 font = pygame.font.Font(None, 36)
 font_big = pygame.font.Font(None, 48)
 
-# esta funcion es para que el fondo se mueva
+# Función para que el fondo se mueva
 def mover_fondo():
     global fondo_x1, fondo_x2
     fondo_x1 -= velocidad_fondo
@@ -40,16 +46,16 @@ def mover_fondo():
     screen.blit(fondo, (fondo_x1, 0))
     screen.blit(fondo, (fondo_x2, 0))
 
+# Función para dibujar la pantalla de inicio
 def dibujar_pantalla_inicio():
     mover_fondo()
     screen.blit(logo, (logo_x, logo_y))
     screen.blit(boton_start, (boton_x, boton_y))
+    screen.blit(boton_ranking, (boton_ranking_x, boton_ranking_y)) 
 
-# Lo que hace esta funcion es para que el cursor cambie cuando este arriba del boton
-def is_over_button(pos):
-    if boton_x <= pos[0] <= boton_x + boton_start.get_width() and boton_y <= pos[1] <= boton_y + boton_start.get_height():
-        return True
-    return False
+# Función para verificar si el cursor está sobre un botón
+def is_over_button(pos, x, y, width, height):
+    return x <= pos[0] <= x + width and y <= pos[1] <= y + height
 
 # Función para guardar nombres en un archivo .txt
 def guardar_nombre_en_txt(nombre, archivo=archivo_nombres):
@@ -74,32 +80,43 @@ def nombre_existente(nombre, archivo=archivo_nombres):
 def solicitar_nombre():
     nombre = ""
     input_active = True
+
+    
+    fondo = pygame.image.load("assets/menu_player.png")
+    font = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 40)  
+    font_big = pygame.font.Font("assets/Vermin Vibes 1989.ttf", 58)  
+
+    color_instruccion = (255, 255, 255) 
+    color_nombre = (0, 200, 255) 
+
     while input_active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:  # Enter confirma el nombre
-                    if nombre.strip():  # Validar que no esté vacío
+                if event.key == pygame.K_RETURN:  
+                    if nombre.strip():  
                         # Si el nombre ya existe, no lo guardamos, pero dejamos que el jugador continúe
                         if not nombre_existente(nombre.strip()):
                             guardar_nombre_en_txt(nombre.strip())  # Guardar el nombre si no existe
                         return nombre.strip()
-                elif event.key == pygame.K_BACKSPACE:  # Borrar caracteres
+                elif event.key == pygame.K_BACKSPACE:  
                     nombre = nombre[:-1]
                 else:
-                    nombre += event.unicode  # Agregar caracteres
+                    nombre += event.unicode 
 
-        # Dibujar la pantalla de entrada de nombre
-        screen.fill((0, 0, 0))  # Fondo negro para el pop-up
-        texto_instruccion = font.render("Ingresa tu nombre y presiona Enter:", True, (255, 255, 255))
-        texto_nombre = font_big.render(nombre, True, (255, 255, 255))
+        
+        screen.blit(fondo, (0, 0))  
+        texto_instruccion = font.render("Ingresa tu nombre y presiona Enter:", True, color_instruccion)
+        texto_nombre = font_big.render(nombre, True, color_nombre)
         
         # Centramos los textos en la pantalla
         screen.blit(texto_instruccion, (screen_width // 2 - texto_instruccion.get_width() // 2, screen_height // 2 - 50))
         screen.blit(texto_nombre, (screen_width // 2 - texto_nombre.get_width() // 2, screen_height // 2))
         pygame.display.update()
+
+
 
 # Loop principal del juego
 def main():
@@ -111,13 +128,20 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if is_over_button(event.pos):
+                # Detectar clic en el botón "Start"
+                if is_over_button(event.pos, boton_x, boton_y, boton_start.get_width(), boton_start.get_height()):
                     nombre_jugador = solicitar_nombre()
                     if nombre_jugador:
                         pantalla_juego.main(nombre_jugador)
+                        game_over.pantalla_juego.main(nombre_jugador)
                         return
+                
+                if is_over_button(event.pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
+                    ranking.main()
+                    
         mouse_pos = pygame.mouse.get_pos()
-        if is_over_button(mouse_pos):
+        if is_over_button(mouse_pos, boton_x, boton_y, boton_start.get_width(), boton_start.get_height()) or \
+            is_over_button(mouse_pos, boton_ranking_x, boton_ranking_y, boton_ranking.get_width(), boton_ranking.get_height()):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)

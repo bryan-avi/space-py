@@ -2,20 +2,19 @@
 import pygame
 import sys
 import pantalla_juego
-from main import main
 
 pygame.init()
 
-# Dimensiones de la pantalla
+
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Cargar los assets
-fondo_game_over = pygame.image.load("assets/game_over_background.png")  # Fondo de Game Over
-titulo_game_over = pygame.image.load("assets/logo_game_over.png")  # Título de Game Over
-boton_menu = pygame.image.load("assets/button_menu_go.png")  # Botón para regresar al menú
-boton_reiniciar = pygame.image.load("assets/button_restart.png")  # Botón para reiniciar el juego
+fondo_game_over = pygame.image.load("assets/game_over_background.png") 
+titulo_game_over = pygame.image.load("assets/logo_game_over.png")  
+boton_menu = pygame.image.load("assets/button_menu_go.png")  
+boton_reiniciar = pygame.image.load("assets/button_restart.png")  
 
 # Posiciones de los elementos
 titulo_x = (screen_width - titulo_game_over.get_width()) // 2
@@ -33,7 +32,7 @@ def is_over_button(pos, button_x, button_y, button_img):
     return button_x <= pos[0] <= button_x + button_img.get_width() and button_y <= pos[1] <= button_y + button_img.get_height()
 
 # Función principal de la pantalla Game Over
-def game_over_screen():
+def game_over_screen(nombre_jugador):
     global fondo_y
     running = True
     while running:
@@ -52,7 +51,7 @@ def game_over_screen():
                     # Reiniciar el juego en el nivel 1
                     from pantalla_juego import jugador
                     pantalla_juego.reiniciar_juego(jugador)  # Llamar a la función de reinicio
-                    pantalla_juego.main()  # Llamar a la función main de la pantalla de juego
+                    pantalla_juego.main(nombre_jugador)  # Llamar a la función main de la pantalla de juego
                     running = False
 
         # Actualizar la posición del fondo
